@@ -3,4 +3,6 @@
 /skarnet-builder/downloads/
 /skarnet-builder/pkg/
 /skarnet-builder/sysdeps/
+dist/
+session.vim
 

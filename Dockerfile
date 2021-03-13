@@ -1,5 +1,8 @@
-FROM ubuntu:14.04
-MAINTAINER Gorka Lerchundi Osa <glertxundi@gmail.com>
+# Usage:
+#
+# mkdir -p dist && chmod o+rw dist; dk build . | tail -n 1 | awk '{ print $3; }' | xargs sudo docker run --rm -v `pwd`/dist:/skarnet-builder/dist
+
+FROM ubuntu
 
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
