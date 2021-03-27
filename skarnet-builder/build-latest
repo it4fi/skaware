@@ -28,7 +28,7 @@ dl() { # {{{1
   curl -s -R -L -o "$dest" "$url"
 }
 
-# TODO remove "$DISTDIR", as it has just been made by ./build-wrapper
+# TODO remove "$DISTDIR", as it has already been made by ./build-wrapper
 mkdir -p "$DOWNLOADDIR" "$BUILDDIR" "$PACKAGEDIR" "$DISTDIR" "$SYSDEPSDIR"
 
 RUNLOG="$PACKAGEDIR/local/bin/runlog"
@@ -95,7 +95,7 @@ manifests[skarnet_portable_packages]="manifest-portable.txt"
 
 # download, use, and remove gcc-9.2.0-manifest.txt {{{1
 dl "${MUSL_CROSS_MAKE_SRC}/gcc-9.2.0-manifest.txt"
-cat $DOWNLOADDIR/gcc-9.2.0-manifest.txt # TODO remove when done
+cat $DOWNLOADDIR/gcc-9.2.0-manifest.txt # TODO remove this line when done
 
 while read -r line; do
     key=$(echo "${line}" | cut -d"=" -f1)

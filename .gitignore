@@ -5,4 +5,4 @@
 /skarnet-builder/sysdeps/
 dist/
 session.vim
-
+*.swp
