@@ -10,4 +10,4 @@ session.vim
 *.out
 sources/
 *.orig
-*.tar.gz
+*.src
