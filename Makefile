@@ -1,8 +1,11 @@
 # Build skaware locally {{{1
 #
-# See also: http://skarnet.org/
+# See also:
+# http://skarnet.org/
+# https://www.gnu.org/software/make/manual/
+# https://www.gnu.org/software/bash/manual/
 
-SHELL=/bin/bash
+SHELL=/bin/bash # {{{1
 
 LOCAL_MACHINE=$(shell uname -m)
 TARGET=${LOCAL_MACHINE}
@@ -27,15 +30,19 @@ $(SOURCES):
 $(SOURCES)/%: URL=http://www.skarnet.org/$(word 1,$(subst -, ,$(notdir $@)))
 
 $(SOURCES)/%: hashes/%.sha1 | $(SOURCES)
-	@echo '- $@ built prerequisites: $^'
-	@echo '- $@ built order-only prerequisites: $|'
 	rm -rf $@.tmp; mkdir -p $@.tmp
 	cd $@.tmp && $(DL_CMD) $(notdir $@) $(URL)/$(notdir $@) && touch $(notdir $@)
-	#cd $@.tmp && $(SHASUM) -c ${CURDIR}/hashes/$(notdir $@).sha1
+	cd $@.tmp && $(SHASUM) -c ${CURDIR}/hashes/$(notdir $@).sha1
 	mv $@.tmp/$(notdir $@) $@ && rm -rf $@.tmp
 
 %.orig: $(SOURCES)/%.tar.gz
 	@echo '- $@ built prerequisites: $^'
+	rm -rf $@.tmp; mkdir -p $@.tmp
+	( cd $@.tmp && tar zxvf - ) < $<
+	rm -rf $@
+	touch $@.tmp/$(patsubst %.orig,%,$@)
+	mv $@.tmp/$(patsubst %.orig,%,$@) $@
+	rm -rf $@.tmp
 
 %: %.orig
 	@echo '- $@ built prerequisites: $^'
