@@ -9,3 +9,5 @@ session.vim
 .DS_Store
 *.out
 sources/
+*.orig
+*.tar.gz

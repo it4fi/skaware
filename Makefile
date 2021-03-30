@@ -21,22 +21,24 @@ $(info - SRC_DIRS ${SRC_DIRS})
 
 DL_CMD = curl -C - -L -o
 SHASUM = sha1sum
+SKAWARE = http://www.skarnet.org/software
+SPACE := $(subst ,, )
 
 all: # the default goal {{{1
 
 $(SOURCES):
 	mkdir -p $@
 
-$(SOURCES)/%: URL=http://www.skarnet.org/$(word 1,$(subst -, ,$(notdir $@)))
+$(SOURCES)/%: URL=$(SKAWARE)/$(subst $(SPACE),-,$(strip $(filter-out %.gz,$(subst -, ,$(notdir $@)))))
 
 $(SOURCES)/%: hashes/%.sha1 | $(SOURCES)
 	rm -rf $@.tmp; mkdir -p $@.tmp
-	cd $@.tmp && $(DL_CMD) $(notdir $@) $(URL)/$(notdir $@) && touch $(notdir $@)
+	cd $@.tmp && $(DL_CMD) $(notdir $@) $(URL)/$(notdir $@)
+	touch $(notdir $@)
 	cd $@.tmp && $(SHASUM) -c ${CURDIR}/hashes/$(notdir $@).sha1
 	mv $@.tmp/$(notdir $@) $@ && rm -rf $@.tmp
 
 %.orig: $(SOURCES)/%.tar.gz
-	@echo '- $@ built prerequisites: $^'
 	rm -rf $@.tmp; mkdir -p $@.tmp
 	( cd $@.tmp && tar zxvf - ) < $<
 	rm -rf $@
