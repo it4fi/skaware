@@ -11,3 +11,4 @@ session.vim
 sources/
 *.orig
 *.src
+config.mak

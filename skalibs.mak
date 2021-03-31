@@ -1,6 +1,9 @@
-$(info - SRCDIR $(SRCDIR), OBJDIR $(OBJDIR))
+include config.mak
 
-all:
+all: # the default goal {{{1
 
-all:
-	@echo '$@ started'
+all: | $(BUILD_DIR)
+	cd $|; CC=$(CC) \
+		./configure --enable-slashpackage --includedir=$(LINUX_HEADERS)
+	cd $|; CC=$(CC) make -j $(MAKE_J)
+	cd $|; CC=$(CC) sudo -E make install

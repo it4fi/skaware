@@ -5,22 +5,15 @@
 # https://www.gnu.org/software/make/manual/
 # https://www.gnu.org/software/bash/manual/
 
-SHELL=/bin/bash # {{{1
-
-LOCAL_MACHINE=$(shell uname -m)
-TARGET=${LOCAL_MACHINE}
-MAKE_J=$(shell expr `nproc` - 1)
-$(info - TARGET ${TARGET}, MAKE_J ${MAKE_J})
-
-$(info - CURDIR ${CURDIR})
+include config.mak # {{{1
 
 SOURCES = sources
 
-SRC_DIRS=$(basename $(basename $(basename \
+PACKAGES=$(basename $(basename $(basename \
 				 $(shell cd hashes; for h in *; do echo $$h; done))))
-SKALIBS := $(filter skalibs-%, $(SRC_DIRS))
-SRC_DIRS := $(SKALIBS) $(filter-out skalibs-%, $(SRC_DIRS))
-$(info - SRC_DIRS ${SRC_DIRS})
+SKALIBS := $(filter skalibs-%, $(PACKAGES))
+PACKAGES := $(SKALIBS) $(filter-out skalibs-%, $(PACKAGES))
+$(info - PACKAGES ${PACKAGES})
 
 DL_CMD = curl -C - -L -o
 SHASUM = sha1sum
@@ -30,7 +23,7 @@ SPACE := $(subst ,, )
 all: # the default goal {{{1
 
 clean:
-	rm -rf *.src $(SOURCES)
+	rm -rf *.build $(SOURCES)
 
 $(SOURCES):
 	mkdir -p $@
@@ -44,22 +37,22 @@ $(SOURCES)/%: hashes/%.sha1 | $(SOURCES)
 	cd $@.tmp && $(SHASUM) -c ${CURDIR}/hashes/$(notdir $@).sha1
 	mv $@.tmp/$(notdir $@) $@ && rm -rf $@.tmp
 
-%.src: $(SOURCES)/%.tar.gz
+%.build: $(SOURCES)/%.tar.gz
 	rm -rf $@.tmp; mkdir -p $@.tmp
 	( cd $@.tmp && tar zxvf - ) < $<
 	rm -rf $@
-	touch $@.tmp/$(patsubst %.src,%,$@)
-	mv $@.tmp/$(patsubst %.src,%,$@) $@
+	touch $@.tmp/$(patsubst %.build,%,$@)
+	mv $@.tmp/$(patsubst %.build,%,$@) $@
 	rm -rf $@.tmp
 
 %: SKAWARE_PKG=$(subst $(SPACE),-,$(strip \
 	$(filter-out %.0 %.1 %.2 %.4,$(subst -, ,$@))))
 
-%: %.src
-	@echo '- make $(SKAWARE_PKG): $<'
-	$(MAKE) -j $(MAKE_J) -f $(SKAWARE_PKG).mak SRCDIR=$< OBJDIR=$@
+%: %.build
+	$(MAKE) -f $(SKAWARE_PKG).mak BUILD_DIR=$<
+	touch $@
 
-all: | $(SRC_DIRS)
+all: | $(PACKAGES)
 	@echo '- $@ built order-only prerequisites: $|'
 
 # Note: .SECONDARY with no prerequisites causes all targets to be treated {{{1
