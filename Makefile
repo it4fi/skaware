@@ -12,7 +12,9 @@ SOURCES = sources
 PACKAGES=$(basename $(basename $(basename \
 				 $(shell cd hashes; for h in *; do echo $$h; done))))
 SKALIBS := $(filter skalibs-%, $(PACKAGES))
-PACKAGES := $(SKALIBS) $(filter-out skalibs-%, $(PACKAGES))
+NSSS := $(filter nsss-%, $(PACKAGES))
+PACKAGES := $(SKALIBS) $(NSSS) $(filter-out nsss-%, \
+	$(filter-out skalibs-%, $(PACKAGES)))
 $(info - PACKAGES ${PACKAGES})
 
 DL_CMD = curl -C - -L -o
@@ -23,7 +25,7 @@ SPACE := $(subst ,, )
 all: # the default goal {{{1
 
 clean:
-	rm -rf *.build $(SOURCES)
+	rm -rf $(PACKAGES) *.build $(SOURCES)
 
 $(SOURCES):
 	mkdir -p $@
