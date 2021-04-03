@@ -1,5 +1,6 @@
 include config.mak
 
+LINUX_HEADERS=/usr/src/linux-raspi-headers-5.4.0-1023/include
 INCLUDE_DIRS := $(shell cd $(LINUX_HEADERS); for i in *; do echo $$i; done)
 
 all: # the default goal {{{1

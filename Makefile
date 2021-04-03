@@ -13,9 +13,10 @@ PACKAGES=$(basename $(basename $(basename \
 				 $(shell cd hashes; for h in *; do echo $$h; done))))
 SKALIBS := $(filter skalibs-%, $(PACKAGES))
 NSSS := $(filter nsss-%, $(PACKAGES))
-PACKAGES := $(SKALIBS) $(NSSS) $(filter-out nsss-%, \
-	$(filter-out skalibs-%, $(PACKAGES)))
-$(info - PACKAGES ${PACKAGES})
+UTMPS := $(filter utmps-%, $(PACKAGES))
+PACKAGES := $(SKALIBS) $(NSSS) $(UTMPS) $(filter-out utmps-%, \
+	$(filter-out nsss-%, \
+	$(filter-out skalibs-%, $(PACKAGES))))
 
 DL_CMD = curl -C - -L -o
 SHASUM = sha1sum

@@ -5,5 +5,3 @@ TARGET=${LOCAL_MACHINE}
 MAKE_J=$(shell expr `nproc` - 1)
 
 CC=gcc
-
-LINUX_HEADERS=/usr/src/linux-headers-5.4.0-1023-raspi/include
